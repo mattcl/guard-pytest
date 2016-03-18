@@ -50,10 +50,10 @@ module Guard
     def remove_pyc
       if options[:pyc_dirs]
         options[:pyc_dirs].each do |dir|
-          system("find #{dir} name '*.pyc' | xargs rm")
+          system("find #{dir} -name '*.pyc' | xargs rm")
         end
       else
-        system("find . name '*.pyc' | xargs rm")
+        system("find . -name '*.pyc' | xargs rm")
       end
     end
   end

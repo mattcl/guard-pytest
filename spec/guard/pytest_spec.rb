@@ -123,7 +123,7 @@ RSpec.describe Guard::Pytest do
         it 'executes a command to remove the files in each specified directory' do
           options[:pyc_dirs].each do |dir|
             expect(subject).to receive(:system)
-              .with("find #{dir} name '*.pyc' | xargs rm")
+              .with("find #{dir} -name '*.pyc' | xargs rm")
           end
 
           subject.send(:remove_pyc)
@@ -133,7 +133,7 @@ RSpec.describe Guard::Pytest do
       context 'when :pyc_dirs is not set' do
         it 'executes a command to remove all .pyc files' do
           expect(subject).to receive(:system)
-            .with("find . name '*.pyc' | xargs rm")
+            .with("find . -name '*.pyc' | xargs rm")
 
           subject.send(:remove_pyc)
         end
