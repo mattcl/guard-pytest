@@ -27,12 +27,18 @@ module Guard
         opts = options[:pytest_option]
       end
 
-      run_tests(opts)
+      dir = options[:pytest_dir]
+
+      run_tests(opts, dir)
       true
     end
 
     def run_on_modifications(paths)
-      run_tests(options[:pytest_option], paths.uniq)
+      remove_pyc if options[:remove_pyc]
+
+      dir = options[:pytest_dir]
+
+      run_tests(options[:pytest_option], dir, paths.uniq)
 
       run_all if options[:all_after_pass]
 
@@ -41,9 +47,15 @@ module Guard
 
     private
 
-    def run_tests(opts, files = nil)
+    def run_tests(opts, dir=nil, files=nil)
       opts = Shellwords.shellsplit(opts)
-      result = system('py.test', *opts, *files)
+
+      if dir
+        result = Dir.chdir(dir) { system('py.test', *opts, *files) }
+      else
+        result = system('py.test', *opts, *files)
+      end
+
       throw(:task_has_failed) unless result
     end
 
@@ -56,5 +68,6 @@ module Guard
         system("find . -name '*.pyc' | xargs rm")
       end
     end
+
   end
 end
